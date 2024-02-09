@@ -77,6 +77,7 @@ print("Classification Scores:", classification_scores)
 print("Regression Scores:", regression_scores)
 ```
 
+```markdown
 ### Enhanced Tree Visualization
 
 Our `plot_tree` method has been enhanced to support a broader range of models. For Example,
@@ -87,6 +88,7 @@ Our `plot_tree` method has been enhanced to support a broader range of models. F
 - scikit-learn's RandomForest (RF)
 
 This ensures broad applicability for model analysis and interpretation, facilitating a deeper understanding of model behavior across various tree-based modeling approaches.
+```
 
 #### Classification Visualization with CustomRandomForestClassifier
 
