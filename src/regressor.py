@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import roc_auc_score, mean_squared_error
-from utils import generate_sample_indices, generate_unsampled_indices
+from .utils import generate_sample_indices, generate_unsampled_indices
 
 
 class CustomRandomForestRegressor(RandomForestRegressor):

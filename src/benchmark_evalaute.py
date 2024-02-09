@@ -87,7 +87,7 @@ if __name__ == "__main__":
         classification_datasets, task_type="classification"
     )
 
-    # Evaluate regression datasets
+    # Evaluate regression datasetss
     df_regression_scores = evaluate_datasets(
         regression_datasets, task_type="regression"
     )
