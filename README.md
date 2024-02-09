@@ -1,3 +1,4 @@
+````markdown
 # ML Helpers: Enhanced RandomForest with Custom Features
 
 ML Helpers offers advanced versions of the RandomForestClassifier and RandomForestRegressor from scikit-learn, incorporating significant enhancements for improved performance and insights. These custom implementations provide a more flexible and insightful approach to RandomForest modeling.
@@ -32,6 +33,7 @@ git clone https://github.com/atikul-islam-sajib/ml_helpers.git
 cd ml_helpers
 pip install -r requirements.txt
 ```
+````
 
 ## Usage
 
@@ -77,17 +79,9 @@ print("Classification Scores:", classification_scores)
 print("Regression Scores:", regression_scores)
 ```
 
-````markdown
 ### Enhanced Tree Visualization
 
-Our `plot_tree` method has been enhanced to support a broader range of models. For Example,
-
-- CustomRandomForestClassifier
-- CustomRandomForestRegressor
-- scikit-learn's Decision Tree (DT)
-- scikit-learn's RandomForest (RF)
-
-This ensures broad applicability for model analysis and interpretation, facilitating a deeper understanding of model behavior across various tree-based modeling approaches.
+Our `plot_tree` method has been enhanced to support a broader range of models. For example, CustomRandomForestClassifier, CustomRandomForestRegressor, scikit-learn's Decision Tree (DT), and scikit-learn's RandomForest (RF). This ensures broad applicability for model analysis and interpretation, facilitating a deeper understanding of model behavior across various tree-based modeling approaches.
 
 #### Classification Visualization with CustomRandomForestClassifier
 
@@ -97,34 +91,27 @@ from imodels.util.data_util import get_clean_dataset
 
 X, y, feature_names = get_clean_dataset('heart')
 model = CustomRandomForestClassifier(n_estimators=3, max_depth=3)
+model.fit(X, y)  # Ensure the model is fitted
 charts = Charts()
-graph = charts.plot_tree(model, feature_names, y)
+graph = charts.plot_tree(model, feature_names, class_names=y.astype(str))
 graph
 ```
 
 #### Regression Visualization with CustomRandomForestRegressor
 
 ```python
+# Ensure you import necessary modules and define `charts`
 X, y, feature_names = get_clean_dataset('credit_g')
 model = CustomRandomForestRegressor(n_estimators=3, max_depth=3)
-graph = charts.plot_tree(model, feature_names, y)
+model.fit(X, y)  # Ensure the model is fitted
+graph = charts.plot_tree(model, feature_names,
+
+ class_names=y.astype(str))
 graph
 ```
-
-#### Regression Visualization with Scikit-Learn DT
-
-```python
-X, y, feature_names = get_clean_dataset('credit_g')
-model = DecisionTreeRegressor(n_estimators=3, max_depth=3)
-graph = charts.plot_tree(model, feature_names, y)
-graph
-```
-
-This visualization functionality is not limited to our custom models but also extends to the default Decision Tree and RandomForest models provided by scikit-learn. This makes it a versatile tool for anyone working with tree-based models, offering insights into how models make decisions, regardless of the specific implementation used.
 
 #### Compatibility Note
 
-```markdown
 The `plot_tree` visualization method is compatible with:
 
 - CustomRandomForestClassifier
@@ -133,9 +120,6 @@ The `plot_tree` visualization method is compatible with:
 - scikit-learn's RandomForest (RF)
 
 This ensures broad applicability for model analysis and interpretation, facilitating a deeper understanding of model behavior across various tree-based modeling approaches.
-```
-
-This additional information ensures that users are fully aware of the capabilities and compatibility of the `plot_tree` method, emphasizing its utility not just for custom models but also for standard models from scikit-learn. It highlights the tool's versatility in visualizing and analyzing decision-making processes within tree-based models.
 
 ## License
 
@@ -144,4 +128,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 We extend our gratitude to the scikit-learn contributors for their foundational work, upon which our custom implementations and enhancements are built.
-````
+
+```
+
+```
