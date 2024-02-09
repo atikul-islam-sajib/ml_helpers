@@ -1,11 +1,14 @@
+import sys
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_squared_error
-from .utils import generate_unsampled_indices, generate_sample_indices
+
+sys.path.append("src/")
+
+from utils import generate_unsampled_indices, generate_sample_indices
 
 
-# Custom RandomForestClassifier class
 class CustomRandomForestClassifier(RandomForestClassifier):
     """
     A custom implementation of RandomForestClassifier that supports weighting trees based on their
