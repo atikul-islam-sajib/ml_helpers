@@ -108,6 +108,32 @@ graph = charts.plot_tree(model, feature_names,
 graph
 ```
 
+#### Regression Visualization with Scikit-learn's Decision Tree (DT)
+
+```python
+# Ensure you import necessary modules and define `charts`
+X, y, feature_names = get_clean_dataset('credit_g')
+model = DecisionTreeRegressor(n_estimators=3, max_depth=3)
+model.fit(X, y)  # Ensure the model is fitted
+graph = charts.plot_tree(model, feature_names,
+
+ class_names=y.astype(str))
+graph
+```
+
+#### Classifier Visualization with Scikit-learn's Decision Tree (DT)
+
+```python
+# Ensure you import necessary modules and define `charts`
+X, y, feature_names = get_clean_dataset('credit_g')
+model = DecisionTreeClassifier(n_estimators=3, max_depth=3)
+model.fit(X, y)  # Ensure the model is fitted
+graph = charts.plot_tree(model, feature_names,
+
+ class_names=y.astype(str))
+graph
+```
+
 #### Compatibility Note
 
 The `plot_tree` visualization method is compatible with:
