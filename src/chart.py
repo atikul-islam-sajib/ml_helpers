@@ -1,11 +1,18 @@
+import sys
 import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 import graphviz
 from matplotlib.colors import Normalize, to_hex
 from matplotlib.cm import ScalarMappable
 import matplotlib.pyplot as plt
+
+sys.path.append("src/")
+
+from classifier import CustomRandomForestClassifier
+from regressor import CustomRandomForestRegressor
 
 
 class Charts:
@@ -143,30 +150,47 @@ class Charts:
         """
         Automatically generate DOT source for a given tree-based model.
 
-        This method selects the first tree from a RandomForestClassifier or uses the single tree from a DecisionTreeClassifier to generate a DOT source for visualization.
+        This method selects the first tree from a RandomForestClassifier/RandomForestRegressor or a
+        CustomRandomForestClassifier, or uses the single tree from a DecisionTreeClassifier/DecisionTreeRegressor
+        to generate a DOT source for visualization.
 
         Parameters:
-        - model (DecisionTreeClassifier or RandomForestClassifier): The fitted model.
+        - model (DecisionTreeClassifier, DecisionTreeRegressor, RandomForestClassifier,
+                 RandomForestRegressor, CustomRandomForestClassifier): The fitted model.
         - feature_names (list): List of feature names.
         - class_names (list): List of class names for the target variable.
 
         Returns:
         - str: The DOT source for visualizing the model's first tree.
         """
-        if isinstance(model, (RandomForestClassifier, RandomForestRegressor)):
+        tree = None
+        oob_error = None
+
+        # Handle RandomForestClassifier/RandomForestRegressor and CustomRandomForestClassifier
+        if isinstance(
+            model,
+            (
+                RandomForestClassifier,
+                RandomForestRegressor,
+                CustomRandomForestClassifier,
+            ),
+        ):
             tree = model.estimators_[0].tree_
+            if hasattr(model, "oob_score_"):
+                oob_error = 1 - model.oob_score_
+        # Handle DecisionTreeClassifier/DecisionTreeRegressor
         elif isinstance(model, (DecisionTreeClassifier, DecisionTreeRegressor)):
             tree = model.tree_
         else:
-            raise ValueError("Model must be a decision tree or random forest.")
+            raise ValueError(
+                "Model must be a decision tree, random forest, or custom random forest model."
+            )
 
         impurity_reduction = Charts.calculate_impurity_reduction(tree)
         custom_metric = np.random.rand(
             tree.node_count
         )  # Placeholder for a custom metric
-        oob_error = (
-            Charts.get_oob_error(model) if hasattr(model, "oob_score_") else None
-        )
+
         dot_source = Charts.get_dot_source(
             tree,
             feature_names,
