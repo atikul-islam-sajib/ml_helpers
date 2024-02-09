@@ -153,13 +153,20 @@ class Charts:
         Returns:
         - str: The DOT source for visualizing the model's first tree.
         """
-        is_rf = isinstance(model, RandomForestClassifier)
-        tree = model.estimators_[0].tree_ if is_rf else model.tree_
+        if isinstance(model, (RandomForestClassifier, RandomForestRegressor)):
+            tree = model.estimators_[0].tree_
+        elif isinstance(model, (DecisionTreeClassifier, DecisionTreeRegressor)):
+            tree = model.tree_
+        else:
+            raise ValueError("Model must be a decision tree or random forest.")
+
         impurity_reduction = Charts.calculate_impurity_reduction(tree)
         custom_metric = np.random.rand(
             tree.node_count
         )  # Placeholder for a custom metric
-        oob_error = Charts.get_oob_error(model) if is_rf else None
+        oob_error = (
+            Charts.get_oob_error(model) if hasattr(model, "oob_score_") else None
+        )
         dot_source = Charts.get_dot_source(
             tree,
             feature_names,
