@@ -101,7 +101,6 @@ charts = Charts()
 graph = charts.plot_tree(model, feature_names, y)
 graph
 ```
-````
 
 #### Regression Visualization with CustomRandomForestRegressor
 
@@ -145,3 +144,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 We extend our gratitude to the scikit-learn contributors for their foundational work, upon which our custom implementations and enhancements are built.
+````
