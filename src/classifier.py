@@ -35,16 +35,31 @@ class CustomRandomForestClassifier(RandomForestClassifier):
         Predict class labels for samples in X.
     predict_proba(X, weights=None):
         Predict class probabilities for samples in X.
+        weight would be either uniform or expOOB
 
-    Examples:
-    ---------
+    Examples(weight=uniform):
+    -------------------------
     >>> from sklearn.datasets import make_classification
     >>> X, y = make_classification(n_samples=1000, n_features=4,
                                   n_informative=2, n_redundant=0,
                                   random_state=42)
+
     >>> clf = CustomRandomForestClassifier(n_estimators=10)
     >>> clf.fit(X, y)
-    >>> print(clf.predict(X[:5]))
+    >>> print(clf.predict(X[:5], weights="uniform")) or print(clf.predict_proba(X[:5], weights="uniform"))
+
+
+    Examples(weight=expOOB):
+    -----------------------
+    >>> from sklearn.datasets import make_classification
+    >>> X, y = make_classification(n_samples=1000, n_features=4,
+                                  n_informative=2, n_redundant=0,
+                                  random_state=42)
+
+    >>> clf = CustomRandomForestClassifier(n_estimators=10)
+    >>> clf.fit(X, y)
+    >>> print(clf.predict(X[:5], weights="expOOB")) or print(clf.predict_proba(X[:5], weights="expOOB"))
+
     """
 
     def fit(self, X, y):
