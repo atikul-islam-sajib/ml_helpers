@@ -1,4 +1,3 @@
-````markdown
 # ML Helpers: Enhanced RandomForest with Custom Features
 
 ML Helpers offers advanced versions of the RandomForestClassifier and RandomForestRegressor from scikit-learn, incorporating significant enhancements for improved performance and insights. These custom implementations provide a more flexible and insightful approach to RandomForest modeling.
@@ -33,6 +32,7 @@ git clone https://github.com/atikul-islam-sajib/ml_helpers.git
 cd ml_helpers
 pip install -r requirements.txt
 ```
+
 ````
 
 ## Usage
@@ -132,3 +132,4 @@ We extend our gratitude to the scikit-learn contributors for their foundational 
 ```
 
 ```
+````
