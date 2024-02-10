@@ -1,0 +1,13 @@
+site_name: ML-Helpers
+
+nav:
+  - Home: index.md
+  - Benchmark Evaluate: benchmark_evalaute.md
+  - Charts: charts.md
+  - Custom RF Classifier: classifier.md
+  - Custom RF Regressor: regressor.md
+  - Utils: utils.md
+
+theme: readthedocs
+plugins:
+  - mkdocstrings
