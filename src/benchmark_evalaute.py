@@ -14,46 +14,50 @@ from regressor import CustomRandomForestRegressor
 def evaluate_datasets(datasets, task_type="classification", random_state=42):
     """
     Evaluate datasets using a custom random forest model, either a classifier or a regressor,
-    and report the performance scores. The function supports evaluation based on ROC AUC for
+    and report the performance scores. This function supports evaluation based on ROC AUC for
     classification tasks and RMSE for regression tasks.
 
-    Parameters
-    ----------
-    datasets : list of str
+    Parameters:
+    -----------
+    - `datasets` : list of str
         The names of the datasets to evaluate. These names should correspond to datasets
-        that can be fetched by the `get_clean_dataset` function.
+        accessible via the `get_clean_dataset` function.
+    - `task_type` : {'classification', 'regression'}, default='classification'
+        Specifies the task type for dataset evaluation. Use 'classification' for ROC AUC score
+        evaluation and 'regression' for RMSE.
+    - `random_state` : int, default=42
+        Controls the randomness of the train/test split and the random forest model construction
+        for reproducibility.
 
-    task_type : {'classification', 'regression'}, default='classification'
-        Specifies the type of task for which the datasets are to be evaluated.
-        - 'classification' evaluates using ROC AUC score.
-        - 'regression' evaluates using RMSE.
-
-    random_state : int, default=42
-        Controls the randomness of the train/test split and the construction of the
-        random forest model for reproducibility.
-
-    Returns
-    -------
-    df_scores : pandas.DataFrame
-        A DataFrame containing the scores for each dataset. Columns include the dataset
-        name, and the performance scores using default and expOOB weighting schemes.
-
-    Examples
+    Returns:
     --------
-    >>> classification_datasets = ["diabetes", "breast_cancer"]
-    >>> regression_datasets = ["boston", "diabetes_reg"]
-    >>> # Evaluate classification datasets
-    >>> df_classification_scores = evaluate_datasets(classification_datasets, task_type="classification")
-    >>> print(df_classification_scores)
-    >>> # Evaluate regression datasets
-    >>> df_regression_scores = evaluate_datasets(regression_datasets, task_type="regression")
-    >>> print(df_regression_scores)
+    - `df_scores` : pandas.DataFrame
+        A DataFrame containing the evaluation scores for each dataset. It includes columns for
+        the dataset name and performance scores using both default and expOOB weighting schemes.
 
-    Note
-    ----
-    The function depends on `CustomRandomForestClassifier` and `CustomRandomForestRegressor`
-    for model fitting and evaluation. Ensure these classes are defined and properly configured
-    to work with the datasets being evaluated. Also, the datasets must be accessible through
+    Examples:
+    ---------
+    Evaluate classification datasets:
+
+    ```python
+    classification_datasets = ["diabetes", "breast_cancer"]
+    df_classification_scores = evaluate_datasets(classification_datasets, task_type="classification")
+    print(df_classification_scores)
+    ```
+
+    Evaluate regression datasets:
+
+    ```python
+    regression_datasets = ["boston", "diabetes_reg"]
+    df_regression_scores = evaluate_datasets(regression_datasets, task_type="regression")
+    print(df_regression_scores)
+    ```
+
+    Note:
+    -----
+    This function relies on `CustomRandomForestClassifier` and `CustomRandomForestRegressor`
+    for model fitting and evaluation. Ensure these classes are implemented and configured to
+    work with the datasets being evaluated. Additionally, the datasets must be retrievable through
     the `get_clean_dataset` utility function.
     """
     scores_default = []

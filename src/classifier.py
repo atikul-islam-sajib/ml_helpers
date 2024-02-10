@@ -15,51 +15,58 @@ class CustomRandomForestClassifier(RandomForestClassifier):
     out-of-bag (OOB) error.
 
     This class extends sklearn's RandomForestClassifier, adding functionality to compute and use
-    weights for each tree in the ensemble. Weights are based on the exponential of the negative
-    OOB error, allowing for more influence to be given to better-performing trees when making predictions.
+    weights for each tree in the ensemble. Weights are derived from the exponential of the negative
+    OOB error, enabling more influential contributions from better-performing trees when making predictions.
 
     Attributes:
     -----------
-    in_bag_indices_ : list of arrays
-        Indices of samples drawn for each tree to train on.
-    oob_indices_ : list of arrays
+    - `in_bag_indices_`: list of arrays
+        Indices of samples drawn for training each tree.
+    - `oob_indices_`: list of arrays
         Out-of-bag sample indices for each tree.
-    tree_weights_ : list of floats
+    - `tree_weights_`: list of floats
         Weights for each tree, computed based on their OOB error.
 
     Methods:
     --------
-    fit(X, y):
-        Fits the random forest model on the input data X and target y.
-    predict(X, weights=None):
-        Predict class labels for samples in X.
-    predict_proba(X, weights=None):
-        Predict class probabilities for samples in X.
-        weight would be either uniform or expOOB
+    - `fit(X, y)`: Fits the random forest model on the input data `X` and target `y`.
+    - `predict(X, weights=None)`: Predicts class labels for samples in `X`.
+    - `predict_proba(X, weights=None)`: Predicts class probabilities for samples in `X`.
+        The `weights` parameter can be either 'uniform' or 'expOOB' to influence prediction.
 
-    Examples(weight=uniform):
-    -------------------------
-    >>> from sklearn.datasets import make_classification
-    >>> X, y = make_classification(n_samples=1000, n_features=4,
-                                  n_informative=2, n_redundant=0,
-                                  random_state=42)
+    Examples:
+    ---------
+    Uniform weights example:
 
-    >>> clf = CustomRandomForestClassifier(n_estimators=10)
-    >>> clf.fit(X, y)
-    >>> print(clf.predict(X[:5], weights="uniform")) or print(clf.predict_proba(X[:5], weights="uniform"))
+    ```python
+    from sklearn.datasets import make_classification
 
+    X, y = make_classification(n_samples=1000, n_features=4,
+                            n_informative=2, n_redundant=0,
+                            random_state=42)
 
-    Examples(weight=expOOB):
-    -----------------------
-    >>> from sklearn.datasets import make_classification
-    >>> X, y = make_classification(n_samples=1000, n_features=4,
-                                  n_informative=2, n_redundant=0,
-                                  random_state=42)
+    clf = CustomRandomForestClassifier(n_estimators=10)
+    clf.fit(X, y)
+    print(clf.predict(X[:5], weights="uniform"))
+    # or
+    print(clf.predict_proba(X[:5], weights="uniform"))
+    ```
 
-    >>> clf = CustomRandomForestClassifier(n_estimators=10)
-    >>> clf.fit(X, y)
-    >>> print(clf.predict(X[:5], weights="expOOB")) or print(clf.predict_proba(X[:5], weights="expOOB"))
+    Exponential OOB weights example:
 
+    ```python
+    from sklearn.datasets import make_classification
+
+    X, y = make_classification(n_samples=1000, n_features=4,
+                            n_informative=2, n_redundant=0,
+                            random_state=42)
+
+    clf = CustomRandomForestClassifier(n_estimators=10)
+    clf.fit(X, y)
+    print(clf.predict(X[:5], weights="expOOB"))
+    # or
+    print(clf.predict_proba(X[:5], weights="expOOB"))
+    ```
     """
 
     def fit(self, X, y):

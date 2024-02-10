@@ -14,37 +14,39 @@ class CustomRandomForestRegressor(RandomForestRegressor):
     A custom implementation of RandomForestRegressor that supports weighting trees based on their
     out-of-bag (OOB) error.
 
-    This class extends sklearn's RandomForestRegressor, adding functionality to compute and use
-    weights for each tree in the ensemble. Weights are based on the exponential of the negative
-    OOB error, allowing for more influence to be given to better-performing trees when making predictions.
+    This class extends sklearn's RandomForestRegressor, adding the functionality to compute and use
+    weights for each tree in the ensemble. Weights are derived from the exponential of the negative
+    OOB error, enabling more influential contributions from better-performing trees when making predictions.
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     All parameters of the sklearn.ensemble.RandomForestRegressor class are accepted.
 
-    Attributes
-    ----------
-    in_bag_indices_ : list of arrays
-        Indices of samples drawn for each tree to train on.
-    oob_indices_ : list of arrays
+    Attributes:
+    -----------
+    - `in_bag_indices_` : list of arrays
+        Indices of samples drawn for training each tree.
+    - `oob_indices_` : list of arrays
         Out-of-bag sample indices for each tree.
-    tree_weights_ : list of floats
+    - `tree_weights_` : list of floats
         Weights for each tree, computed based on their OOB error.
 
-    Methods
-    -------
-    fit(X, y):
-        Fit the random forest regressor model on the input data X and target y.
-    predict(X, weights=None):
-        Predict regression target for X.
-
-    Examples
+    Methods:
     --------
-    >>> from sklearn.datasets import make_regression
-    >>> X, y = make_regression(n_samples=1000, n_features=4, n_informative=2, noise=0.5, random_state=42)
-    >>> reg = CustomRandomForestRegressor(n_estimators=100, random_state=42)
-    >>> reg.fit(X, y)
-    >>> y_pred = reg.predict(X[:5])
+    - `fit(X, y)`: Fits the random forest regressor model on the input data `X` and target `y`.
+    - `predict(X, weights=None)`: Predicts regression target for `X`. The `weights` parameter can
+    be either 'uniform' or 'expOOB' to influence prediction.
+
+    Examples:
+    ---------
+    ```python
+    from sklearn.datasets import make_regression
+
+    X, y = make_regression(n_samples=1000, n_features=4, n_informative=2, noise=0.5, random_state=42)
+    reg = CustomRandomForestRegressor(n_estimators=100, random_state=42)
+    reg.fit(X, y)
+    y_pred = reg.predict(X[:5])
+    ```
     """
 
     def fit(self, X, y):

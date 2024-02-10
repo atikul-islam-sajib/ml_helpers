@@ -16,6 +16,99 @@ from regressor import CustomRandomForestRegressor
 
 
 class Charts:
+    """
+    Provides visualization functionalities for decision trees and random forests using graphviz and matplotlib.
+
+    ## Features
+
+    - Calculate impurity reduction for each node in a decision tree.
+    - Retrieve Out-Of-Bag (OOB) error from fitted RandomForest models.
+    - Generate DOT source for tree visualizations with node coloring based on impurity.
+    - Automatically generate DOT source for visualization of model's first tree or a single decision tree.
+    - Plot decision trees or the first tree of a random forest using graphviz.
+    - Visualize the first few trees in a RandomForest model.
+
+    ## Methods
+
+    ### `calculate_impurity_reduction(tree)`
+    Calculates the decrease in impurity for each node of a decision tree, indicating each split's contribution.
+
+    **Parameters:**
+
+    - `tree` (DecisionTreeClassifier.tree_): The tree object from a fitted DecisionTreeClassifier or RandomForestClassifier.
+
+    **Returns:**
+
+    - `numpy.ndarray`: An array of impurity reduction values for each node.
+
+    ### `get_oob_error(model)`
+    Retrieves the OOB error from a fitted RandomForestClassifier.
+
+    **Parameters:**
+
+    - `model` (RandomForestClassifier): The fitted model.
+
+    **Returns:**
+
+    - `float` or `None`: The OOB error if available, otherwise `None`.
+
+    ### `get_dot_source(tree, feature_names, class_names, impurity_reduction, custom_metric, oob_error=None)`
+    Generates DOT source for tree visualization with node coloring based on impurity.
+
+    **Parameters:**
+
+    - `tree` (DecisionTreeClassifier.tree_): The tree object from a fitted model.
+    - `feature_names` (list): List of feature names.
+    - `class_names` (list): List of class names for the target variable.
+    - `impurity_reduction` (numpy.ndarray): Impurity reduction values for each node.
+    - `custom_metric` (numpy.ndarray): Custom metric values for each node.
+    - `oob_error` (float, optional): OOB error of the model, if applicable.
+
+    **Returns:**
+
+    - `str`: A string representation of the DOT source for the tree visualization.
+
+    ### `auto_generate_dot_source(model, feature_names, class_names)`
+    Automatically generates DOT source for a model's first tree or a single decision tree.
+
+    **Parameters:**
+
+    - `model`: The fitted model (supports various tree-based models).
+    - `feature_names` (list): List of feature names.
+    - `class_names` (list): List of class names for the target variable.
+
+    **Returns:**
+
+    - `str`: The DOT source for visualizing the model's first tree.
+
+    ### `plot_tree(model, feature_names, class_names)`
+    Plots a decision tree or the first tree of a random forest using graphviz.
+
+    **Parameters:**
+
+    - `model`: The fitted model (DecisionTreeClassifier or RandomForestClassifier).
+    - `feature_names` (list): List of feature names.
+    - `class_names` (list): List of class names for the target variable.
+
+    **Returns:**
+
+    - `graphviz.Source`: The graphviz object for the tree visualization.
+
+    ### `plot_forest_trees(forest_model, feature_names, class_names, max_trees=5)`
+    Visualizes the first few trees in a RandomForest model.
+
+    **Parameters:**
+
+    - `forest_model` (RandomForestClassifier): The fitted RandomForestClassifier model.
+    - `feature_names` (list): Names of the features.
+    - `class_names` (list): Names of the target classes.
+    - `max_trees` (int): Maximum number of trees to plot. Defaults to 5.
+
+    **Note:**
+
+    This method prints the visualization of each tree one by one.
+    """
+
     @staticmethod
     def calculate_impurity_reduction(tree):
         """
@@ -223,18 +316,14 @@ class Charts:
     @staticmethod
     def plot_forest_trees(forest_model, feature_names, class_names, max_trees=5):
         """
-        Visualize the first few trees in a Random Forest model.
 
-        This method plots up to a specified number of trees from a RandomForestClassifier, showing their structure and metrics like impurity and custom metrics.
+        ### Parameters
 
-        Parameters:
-        - forest_model (RandomForestClassifier): The fitted RandomForestClassifier model.
-        - feature_names (list): Names of the features.
-        - class_names (list): Names of the target classes.
-        - max_trees (int): Maximum number of trees to plot. Defaults to 5.
+        - `forest_model` (`RandomForestClassifier`): The fitted RandomForestClassifier model from which the trees will be visualized.
+        - `feature_names` (`list`): A list of strings representing the names of the features used in the model.
+        - `class_names` (`list`): A list of strings representing the names of the target classes the model predicts.
+        - `max_trees` (`int`, optional): The maximum number of trees to visualize. Defaults to 5.
 
-        Note:
-        - This method prints the visualization of each tree one by one.
         """
         for idx, estimator in enumerate(forest_model.estimators_[:max_trees]):
             print(f"Visualizing Tree {idx + 1} of {len(forest_model.estimators_)}")
