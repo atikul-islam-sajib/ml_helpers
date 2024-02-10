@@ -134,6 +134,14 @@ graph = charts.plot_tree(model, feature_names,
 graph
 ```
 
+## Documentation
+
+For detailed documentation on the implementation and usage, visit the [ML-Helpers Documentation](https://atikul-islam-sajib.github.io/ml-helpers-deploy/).
+
+## Notebook Training
+
+For detailed documentation on the implementation and usage using notebook, visit the [Notebook](https://github.com/atikul-islam-sajib/ml_helpers/blob/main/notebooks/CodePrototype.ipynb).
+
 #### Compatibility Note
 
 The `plot_tree` visualization method is compatible with:
