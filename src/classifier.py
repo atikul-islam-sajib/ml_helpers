@@ -11,62 +11,80 @@ from utils import generate_unsampled_indices, generate_sample_indices
 
 class CustomRandomForestClassifier(RandomForestClassifier):
     """
-    A custom implementation of RandomForestClassifier that supports weighting trees based on their
-    out-of-bag (OOB) error.
+    A custom implementation of `RandomForestClassifier` supporting weighting trees based on their out-of-bag (OOB) error.
 
-    This class extends sklearn's RandomForestClassifier, adding functionality to compute and use
-    weights for each tree in the ensemble. Weights are derived from the exponential of the negative
-    OOB error, enabling more influential contributions from better-performing trees when making predictions.
+    This class extends `sklearn.ensemble.RandomForestClassifier`, adding functionality to compute and use weights for
+    each tree in the ensemble, derived from the exponential of the negative OOB error. This approach allows for more
+    influential contributions from better-performing trees when making predictions.
+
+    Inherits from `sklearn.ensemble.RandomForestClassifier`:
+    ```python
+    sklearn.ensemble.RandomForestClassifier(
+        n_estimators=100, *, criterion='gini', max_depth=None, min_samples_split=2, min_samples_leaf=1,
+        min_weight_fraction_leaf=0.0, max_features='sqrt', max_leaf_nodes=None, min_impurity_decrease=0.0,
+        bootstrap=True, oob_score=False, n_jobs=None, random_state=None, verbose=0, warm_start=False,
+        class_weight=None, ccp_alpha=0.0, max_samples=None, monotonic_cst=None
+    )
+    ```
+        
+    Parameters:
+        n_estimators : int, default=100
+            The number of trees in the forest.
+        criterion : {"gini", "entropy", "log_loss"}, default="gini"
+            The function to measure the quality of a split.
+        max_depth : int, default=None
+            The maximum depth of the tree.
+        min_samples_split : int or float, default=2
+            The minimum number of samples required to split an internal node.
+        min_samples_leaf : int or float, default=1
+            The minimum number of samples required to be at a leaf node.
+        min_weight_fraction_leaf : float, default=0.0
+            The minimum weighted fraction of the sum total of weights required to be at a leaf node.
+        max_features : {"sqrt", "log2", None}, int or float, default="sqrt"
+            The number of features to consider when looking for the best split.
+        bootstrap : bool, default=True
+            Whether bootstrap samples are used when building trees.
+        oob_score : bool, default=False
+            Whether to use out-of-bag samples to estimate the generalization accuracy.
+        n_jobs : int, default=None
+            The number of jobs to run in parallel for both `fit` and `predict`.
+        random_state : int, RandomState instance or None, default=None
+            Controls both the randomness of the bootstrapping of the samples used when building trees (if `bootstrap=True`) and the sampling of the features to consider when looking for the best split at each node (if `max_features < n_features`).
+        verbose : int, default=0
+            Controls the verbosity when fitting and predicting.
+        warm_start : bool, default=False
+            When set to `True`, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest.
+        class_weight : dict, list of dict, "balanced", "balanced_subsample" or None, default=None
+            Weights associated with classes in the form `{class_label: weight}`.
+        ccp_alpha : non-negative float, default=0.0
+            Complexity parameter used for Minimal Cost-Complexity Pruning.
+        max_samples : int or float, default=None
+            The number of samples to draw from X to train each base estimator.
 
     Attributes:
-    -----------
-    - `in_bag_indices_`: list of arrays
-        Indices of samples drawn for training each tree.
-    - `oob_indices_`: list of arrays
-        Out-of-bag sample indices for each tree.
-    - `tree_weights_`: list of floats
-        Weights for each tree, computed based on their OOB error.
+        in_bag_indices_ (List[ndarray]): Indices of samples drawn for training each tree.
+        oob_indices_ (List[ndarray]): Out-of-bag sample indices for each tree.
+        tree_weights_ (List[float]): Weights for each tree, computed based on their OOB error.
 
     Methods:
-    --------
-    - `fit(X, y)`: Fits the random forest model on the input data `X` and target `y`.
-    - `predict(X, weights=None)`: Predicts class labels for samples in `X`.
-    - `predict_proba(X, weights=None)`: Predicts class probabilities for samples in `X`.
-        The `weights` parameter can be either 'uniform' or 'expOOB' to influence prediction.
+        fit(X, y): Fit the random forest model on the input data `X` and target `y`.
+        predict(X, weights=None): Predict class labels for samples in `X`, with an option to use custom tree weights.
+        predict_proba(X, weights=None): Predict class probabilities for samples in `X`, with an option to use custom
+                                        tree weights.
 
     Examples:
-    ---------
-    Uniform weights example:
+        >>> from sklearn.datasets import make_classification
+        >>> X, y = make_classification(n_samples=1000, n_features=4,
+        ...                            n_informative=2, n_redundant=0,
+        ...                            random_state=42)
+        >>> clf = CustomRandomForestClassifier(n_estimators=10)
+        >>> clf.fit(X, y)
+        >>> print(clf.predict(X[:5], weights="uniform"))
+        >>> print(clf.predict_proba(X[:5], weights="uniform"))
 
-    ```python
-    from sklearn.datasets import make_classification
-
-    X, y = make_classification(n_samples=1000, n_features=4,
-                            n_informative=2, n_redundant=0,
-                            random_state=42)
-
-    clf = CustomRandomForestClassifier(n_estimators=10)
-    clf.fit(X, y)
-    print(clf.predict(X[:5], weights="uniform"))
-    # or
-    print(clf.predict_proba(X[:5], weights="uniform"))
-    ```
-
-    Exponential OOB weights example:
-
-    ```python
-    from sklearn.datasets import make_classification
-
-    X, y = make_classification(n_samples=1000, n_features=4,
-                            n_informative=2, n_redundant=0,
-                            random_state=42)
-
-    clf = CustomRandomForestClassifier(n_estimators=10)
-    clf.fit(X, y)
-    print(clf.predict(X[:5], weights="expOOB"))
-    # or
-    print(clf.predict_proba(X[:5], weights="expOOB"))
-    ```
+        For exponential OOB weights:
+        >>> print(clf.predict(X[:5], weights="expOOB"))
+        >>> print(clf.predict_proba(X[:5], weights="expOOB"))
     """
 
     def fit(self, X, y):
@@ -103,25 +121,19 @@ class CustomRandomForestClassifier(RandomForestClassifier):
         """
         Make predictions for the input samples using the custom random forest model.
 
-        Parameters
-        ----------
-        X : {array-like, sparse matrix} of shape (n_samples, n_features)
-            The input samples.
-        weights : str, optional (default=None)
-            The weighting scheme to use for aggregating tree predictions. Options are:
+        Parameters:
+            weights : str, optional (default=None). The weighting scheme to use for aggregating tree predictions. Options are:
             - 'expOOB': Use exponential of the negative out-of-bag error as weights.
             - 'uniform': Use uniform weights for all trees.
             If None or an unrecognized string is provided, 'uniform' weighting is used.
 
-        Returns
-        -------
-        predictions : array of shape (n_samples,)
+        Returns:
+            predictions : array of shape (n_samples,)
             The predicted classes.
 
-        Notes
-        -----
-        The 'expOOB' weighting scheme emphasizes trees with lower OOB errors by assigning them
-        higher weights, potentially improving prediction accuracy.
+        Notes:
+            The 'expOOB' weighting scheme emphasizes trees with lower OOB errors by assigning them
+            higher weights, potentially improving prediction accuracy.
         """
         if not hasattr(self, "estimators_"):
             raise ValueError("The forest is not fitted yet!")
@@ -147,25 +159,20 @@ class CustomRandomForestClassifier(RandomForestClassifier):
         """
         Predict class probabilities for the input samples using the custom random forest model.
 
-        Parameters
-        ----------
-        X : {array-like, sparse matrix} of shape (n_samples, n_features)
-            The input samples.
-        weights : str, optional (default=None)
-            The weighting scheme to use for aggregating tree predictions. Options are:
-            - 'expOOB': Use exponential of the negative out-of-bag error as weights.
-            - 'uniform': Use uniform weights for all trees.
+        Parameters:
+            weights : str, optional (default=None). The weighting scheme to use for aggregating tree predictions. Options are:
+            -'expOOB': Use exponential of the negative out-of-bag error as weights.
+            -'uniform': Use uniform weights for all trees.
+            
             If None or an unrecognized string is provided, 'uniform' weighting is used.
 
-        Returns
-        -------
-        proba : array of shape (n_samples, n_classes)
+        Returns:
+            proba : array of shape (n_samples, n_classes)
             The class probabilities of the input samples.
 
-        Notes
-        -----
-        Similar to `predict`, but returns probabilities of each class instead of predicting the class label.
-        The 'expOOB' weighting can help in achieving more nuanced probability estimates.
+        Notes:
+            Similar to `predict`, but returns probabilities of each class instead of predicting the class label.
+            The 'expOOB' weighting can help in achieving more nuanced probability estimates.
         """
         if not hasattr(self, "estimators_"):
             raise ValueError("The forest is not fitted yet!")
